@@ -1,5 +1,6 @@
 <template>
-  <div id="map" style="width: 500px; height: 400px"></div>
+  <div id="map" style="width: 100%; height: 600px"></div>
+  <article></article>
 </template>
 
 <script setup>
@@ -10,13 +11,6 @@ const longitude = ref(0);
 const store = useStore();
 const moveLat = ref(0);
 const moveLng = ref(0);
-
-watch(
-  () => store.state.userData.length,
-  () => {
-    createMarker();
-  }
-);
 
 onMounted(() => {
   if (!("geolocation" in navigator)) {
@@ -29,7 +23,7 @@ onMounted(() => {
       longitude.value = pos.coords.longitude;
       store.state.nowLatitude = pos.coords.latitude;
       store.state.nowLongitude = pos.coords.longitude;
-      console.log(pos.coords.latitude, pos.coords.longitude);
+
       if (window.kakao && window.kakao.maps) {
         initMap();
       } else {
@@ -48,26 +42,25 @@ onMounted(() => {
 });
 
 const setMarker = (map) => {
-  let markerArr = store.state.userData;
+  let markerArr = store.state.caffeData;
   for (var i = 0; i < markerArr.length; i++) {
     var mlatitude = markerArr[i].latitude;
     var mlongitude = markerArr[i].longitude;
     var markerPosition = new kakao.maps.LatLng(mlatitude, mlongitude);
+    var imageSrc =
+        "//image.istarbucks.co.kr/common/img/store/pin/pin_general.png",
+      imageSize = new kakao.maps.Size(30, 50), // 마커이미지의 크기입니다
+      imageOption = { offset: new kakao.maps.Point(27, 69) };
+    var markerImg = new kakao.maps.MarkerImage(
+      imageSrc,
+      imageSize,
+      imageOption
+    );
     var marker = new kakao.maps.Marker({
       position: markerPosition,
+      image: markerImg,
     });
     marker.setMap(map);
-    var iwContent = `<div class ="label"><span class="left"></span><span class="center" style="background-color:white"> ${markerArr[i].username} </span><span class="right"></span></div>`,
-      iwPosition = new kakao.maps.LatLng(mlatitude, mlongitude); //인포윈도우 표시 위치입니다
-    var customOverlay = new kakao.maps.CustomOverlay({
-      map: map,
-      position: iwPosition,
-      content: iwContent,
-      yAnchor: 2.5,
-    });
-
-    // 커스텀 오버레이를 지도에 표시합니다
-    customOverlay.setMap(map);
   }
 };
 

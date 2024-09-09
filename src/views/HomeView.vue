@@ -1,7 +1,11 @@
 <template>
-  <div></div>
+  <div>
+    <MapView />
+  </div>
 </template>
 
-<script setup></script>
+<script setup>
+import MapView from "../components/home/MapView.vue";
+</script>
 
 <style lang="scss" scoped></style>
