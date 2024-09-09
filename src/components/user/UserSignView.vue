@@ -51,8 +51,8 @@
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
-let fixedCenterlat = store.nowLongitude + Math.random() * 0.04;
-let fixedCenterlong = store.nowLatitude + Math.random() * 0.04;
+let fixedCenterlat = 37.4812 + Math.random() * 0.04;
+let fixedCenterlong = 126.88 + Math.random() * 0.04;
 const userdata = ref({
   userid: null,
   password: null,
