@@ -1,0 +1,110 @@
+<template>
+  <div id="map" style="width: 500px; height: 400px"></div>
+</template>
+
+<script setup>
+import { onMounted, ref, watch } from "vue";
+import { useStore } from "vuex";
+const latitude = ref(0);
+const longitude = ref(0);
+const store = useStore();
+const moveLat = ref(0);
+const moveLng = ref(0);
+
+watch(
+  () => store.state.userData.length,
+  () => {
+    createMarker();
+  }
+);
+
+onMounted(() => {
+  if (!("geolocation" in navigator)) {
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      latitude.value = pos.coords.latitude;
+      longitude.value = pos.coords.longitude;
+
+      //   initMap();
+
+      if (window.kakao && window.kakao.maps) {
+        initMap();
+      } else {
+        const script = document.createElement("script");
+        /* global kakao */
+        script.onload = () => kakao.maps.load(initMap);
+        script.src =
+          "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=05222ace53571c8fbb636c91def0fbc2";
+        document.head.appendChild(script);
+      }
+    },
+    (err) => {
+      alert(err.message);
+    }
+  );
+});
+
+const setMarker = (map) => {
+  let markerArr = store.state.userData;
+  for (var i = 0; i < markerArr.length; i++) {
+    var mlatitude = markerArr[i].latitude;
+    var mlongitude = markerArr[i].longitude;
+    var markerPosition = new kakao.maps.LatLng(mlatitude, mlongitude);
+    var marker = new kakao.maps.Marker({
+      position: markerPosition,
+    });
+    marker.setMap(map);
+    var iwContent = `<div class ="label"><span class="left"></span><span class="center" style="background-color:white"> ${markerArr[i].username} </span><span class="right"></span></div>`,
+      iwPosition = new kakao.maps.LatLng(mlatitude, mlongitude); //인포윈도우 표시 위치입니다
+    var customOverlay = new kakao.maps.CustomOverlay({
+      map: map,
+      position: iwPosition,
+      content: iwContent,
+      yAnchor: 2.5,
+    });
+
+    // 커스텀 오버레이를 지도에 표시합니다
+    customOverlay.setMap(map);
+  }
+
+  // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+  infowindow.open(map, marker);
+};
+
+const initMap = () => {
+  const container = document.getElementById("map");
+  let options = {
+    center: new kakao.maps.LatLng(latitude.value, longitude.value),
+    level: 3,
+  };
+
+  let map = new kakao.maps.Map(container, options);
+  setMarker(map);
+
+  kakao.maps.event.addListener(map, "center_changed", function () {
+    var latlng = map.getCenter();
+    moveLat.value = latlng.getLat();
+    moveLng.value = latlng.getLng();
+  });
+};
+
+const createMarker = () => {
+  const container = document.getElementById("map");
+  let options = {
+    center: new kakao.maps.LatLng(latitude.value, longitude.value),
+    level: 3,
+  };
+  let map = new kakao.maps.Map(container, options);
+  setMarker(map);
+  kakao.maps.event.addListener(map, "center_changed", function () {
+    var latlng = map.getCenter();
+    moveLat.value = latlng.getLat();
+    moveLng.value = latlng.getLng();
+  });
+};
+</script>
+
+<style lang="scss" scoped></style>
