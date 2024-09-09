@@ -1,6 +1,31 @@
 <template>
-  <div id="map" style="width: 100%; height: 600px"></div>
-  <article></article>
+  <div>
+    <div id="map" style="width: 100%; height: 600px"></div>
+    <div class="articleWrap">
+      <article style="justify-content: center">
+        <ul
+          class="placeUl"
+          style="
+            list-style-type: none;
+            vertical-align: baseline;
+            list-style: none;
+          "
+        >
+          <li class="placeList" v-for="item in store.state.caffeData">
+            <strong class="itemTitle">{{ item.title }}</strong>
+            <p class="itemAddr">{{ item.addr }}</p>
+            <i
+              class="placeImg"
+              style="
+                background: url(https://www.starbucks.co.kr/common/img/store/pin/pin_general.png);
+              "
+              @click="showInfoWindow(item)"
+            ></i>
+          </li>
+        </ul>
+      </article>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -81,11 +106,11 @@ const initMap = () => {
   });
 };
 
-const createMarker = () => {
+const showInfoWindow = (item) => {
   const container = document.getElementById("map");
   let options = {
     center: new kakao.maps.LatLng(latitude.value, longitude.value),
-    level: 3,
+    level: 6,
   };
   let map = new kakao.maps.Map(container, options);
   setMarker(map);
@@ -94,7 +119,103 @@ const createMarker = () => {
     moveLat.value = latlng.getLat();
     moveLng.value = latlng.getLng();
   });
+  var iwContent = `<div class ="label" style ="background-color:white"><span class="left"></span><div class="infoWindow" 
+    style="background-color:white;
+    float: left;
+    font-size: 12px;
+    min-height: 14px;
+    line-height: 14px;
+    margin-top: 10px;
+    display: inline-block;
+    word-wrap: break-word; 
+    overflow-wrap: break-word;
+    white-space: normal;
+    padding-left: 17px;
+    width: 237px;"> ${item.title} <br> ${item.addr}</div><span class="right"></span></div>`,
+    iwPosition = new kakao.maps.LatLng(item.latitude, item.longitude); //인포윈도우 표시 위치입니다
+  var customOverlay = new kakao.maps.CustomOverlay({
+    map: map,
+    position: iwPosition,
+    content: iwContent,
+    yAnchor: 2.5,
+  });
 };
+
+// const showInfoWindow = (item) => {};
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.strong {
+  float: left;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
+  margin-top: 8px;
+  width: 100%;
+}
+.articleWrap {
+  background: #fff;
+  border-radius: 3px;
+  // height: 118px;
+  position: absolute;
+  top: 120px;
+  left: 20px;
+  z-index: 10;
+}
+.article {
+  position: absolute;
+  top: 20px;
+  width: 300px;
+}
+.itemAddr {
+  float: left;
+  font-size: 12px;
+  margin-top: 5px;
+  line-height: 1.4;
+  width: 80%;
+}
+.itemTitle {
+  color: #444;
+  float: left;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
+  margin-top: 8px;
+  width: 100%;
+}
+.placeList {
+  margin: 0 auto;
+  border-bottom: 1px solid #ddd;
+  height: 100px;
+  position: relative;
+  width: 270px;
+}
+.placeUl {
+  padding: 0;
+  margin: 0 auto;
+  list-style-type: disc;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 10px;
+  padding-inline-end: 10px;
+  unicode-bidi: isolate;
+  width: 100%;
+}
+
+.placeImg {
+  background-size: 100% auto;
+  display: block;
+  height: 60px;
+  overflow: hidden;
+  position: absolute;
+  right: 5px;
+  text-indent: -20000px;
+  top: 22px;
+  width: 38px;
+}
+
+.label .infoWindow {
+}
+</style>

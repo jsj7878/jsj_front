@@ -29,7 +29,6 @@ onMounted(() => {
       longitude.value = pos.coords.longitude;
       store.state.nowLatitude = pos.coords.latitude;
       store.state.nowLongitude = pos.coords.longitude;
-      console.log(pos.coords.latitude, pos.coords.longitude);
       if (window.kakao && window.kakao.maps) {
         initMap();
       } else {
