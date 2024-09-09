@@ -51,16 +51,12 @@
 import { ref, watch } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
-let fixedCenterlat = 37.4812 + Math.random() * 0.04;
-let fixedCenterlong = 126.88 + Math.random() * 0.04;
 const userdata = ref({
   userid: null,
   password: null,
   username: null,
   addr: null,
   image: null,
-  latitude: fixedCenterlat,
-  longitude: fixedCenterlong,
 });
 
 const clearform = () => {
@@ -69,8 +65,6 @@ const clearform = () => {
   userdata.value.username = null;
   userdata.value.addr = null;
   userdata.value.image = null;
-  userdata.value.latitude = fixedCenterlat;
-  userdata.value.longitude = fixedCenterlong;
 };
 
 const addUser = () => {
@@ -80,8 +74,8 @@ const addUser = () => {
     username: userdata.value.username,
     addr: userdata.value.addr,
     image: userdata.value.image,
-    latitude: fixedCenterlat,
-    longitude: fixedCenterlong,
+    latitude: 37.4812 + (Math.random() * 2 - 1) * 0.002,
+    longitude: 126.88 + (Math.random() * 2 - 1) * 0.002,
   };
   if (uData.userid !== null) {
     store.commit("addUser", uData);

@@ -68,6 +68,13 @@ export default createStore({
       addr: "",
       image: "",
     },
+    defaultUser: {
+      userid: "",
+      password: "",
+      username: "",
+      addr: "",
+      image: "",
+    },
     nowLongitude: 0,
     nowLatitude: 0,
   },
@@ -91,9 +98,10 @@ export default createStore({
         (user) => user.userid === payload.userid
       );
       if (index !== -1) {
-        console.log(state.userData[index], payload);
         state.userData[index] = payload;
+        state.selectedUser = state.defaultUser;
       }
+      console.log(state.userData);
     },
   },
 });

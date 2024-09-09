@@ -12,9 +12,10 @@ const moveLat = ref(0);
 const moveLng = ref(0);
 
 watch(
-  () => store.state.userData.length,
+  () => store.state.selectedUser,
   () => {
-    createMarker();
+    console.log(store.state.selectedUser);
+    initMap();
   }
 );
 
@@ -55,6 +56,7 @@ const setMarker = (map) => {
     var marker = new kakao.maps.Marker({
       position: markerPosition,
     });
+    console.log(markerArr[i]);
     marker.setMap(map);
     var iwContent = `<div class ="label"><span class="left"></span><span class="center" style="background-color:white"> ${markerArr[i].username} </span><span class="right"></span></div>`,
       iwPosition = new kakao.maps.LatLng(mlatitude, mlongitude); //인포윈도우 표시 위치입니다
@@ -64,7 +66,7 @@ const setMarker = (map) => {
       content: iwContent,
       yAnchor: 2.5,
     });
-
+    // console.log(markerArr[i]);
     // 커스텀 오버레이를 지도에 표시합니다
     customOverlay.setMap(map);
   }
@@ -79,7 +81,6 @@ const initMap = () => {
 
   let map = new kakao.maps.Map(container, options);
   setMarker(map);
-
   kakao.maps.event.addListener(map, "center_changed", function () {
     var latlng = map.getCenter();
     moveLat.value = latlng.getLat();
@@ -87,20 +88,20 @@ const initMap = () => {
   });
 };
 
-const createMarker = () => {
-  const container = document.getElementById("map");
-  let options = {
-    center: new kakao.maps.LatLng(latitude.value, longitude.value),
-    level: 3,
-  };
-  let map = new kakao.maps.Map(container, options);
-  setMarker(map);
-  kakao.maps.event.addListener(map, "center_changed", function () {
-    var latlng = map.getCenter();
-    moveLat.value = latlng.getLat();
-    moveLng.value = latlng.getLng();
-  });
-};
+// const createMarker = () => {
+//   const container = document.getElementById("map");
+//   let options = {
+//     center: new kakao.maps.LatLng(latitude.value, longitude.value),
+//     level: 6,
+//   };
+//   let map = new kakao.maps.Map(container, options);
+//   setMarker(map);
+//   kakao.maps.event.addListener(map, "center_changed", function () {
+//     var latlng = map.getCenter();
+//     moveLat.value = latlng.getLat();
+//     moveLng.value = latlng.getLng();
+//   });
+// };
 </script>
 
 <style lang="scss" scoped></style>
